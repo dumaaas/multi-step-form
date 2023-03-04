@@ -1,13 +1,15 @@
 import { styled } from "@mui/material/styles";
 import Checkbox from "@mui/material/Checkbox";
+import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 
 const BpIcon = styled("span")(({ theme }) => ({
   borderRadius: 3,
   width: 20,
   height: 20,
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
   boxShadow:
     theme.palette.mode === "dark"
       ? "0 0 0 1px rgb(16 22 26 / 40%)"
@@ -70,8 +72,12 @@ function BpCheckbox(props) {
 }
 
 function YourAddOns() {
-  const isMonthly = true;
-  const addOns = [
+  const addOnsStore = useSelector((state) => state.addOns);
+  const isMonthly = useSelector((state) => state.isMonthly);
+
+  const dispatch = useDispatch();
+
+  const addOnsC = [
     {
       id: 1,
       checked: false,
@@ -83,44 +89,73 @@ function YourAddOns() {
     {
       id: 2,
       checked: false,
-      title: "Online service",
-      subtitle: "Access to multiplayer games",
-      yearlyPrice: "10",
-      monthlyPrice: "1",
+      title: "Larger store",
+      subtitle: "Extra 1TB of cloud save",
+      yearlyPrice: "20",
+      monthlyPrice: "2",
     },
     {
       id: 3,
       checked: false,
-      title: "Online service",
-      subtitle: "Access to multiplayer games",
-      yearlyPrice: "10",
-      monthlyPrice: "1",
+      title: "Customizable profile",
+      subtitle: "Custom theme on your profile",
+      yearlyPrice: "20",
+      monthlyPrice: "2",
     },
   ];
+
+  useEffect(() => {
+    if (addOnsStore === null) {
+      dispatch({
+        type: "SET_ADDONS",
+        payload: addOnsC,
+      });
+    }
+  }, []);
+  const [addOns, setAddOns] = useState(
+    addOnsStore === null ? addOnsC : addOnsStore
+  );
+
+  const handleChange = (item) => {
+    const updatedObjects = addOns.map((obj) =>
+      item.id === obj.id ? { ...obj, checked: !obj.checked } : obj
+    );
+    setAddOns(updatedObjects);
+    dispatch({
+      type: "SET_ADDONS",
+      payload: updatedObjects,
+    });
+  };
   return (
     <div className="flex flex-col justify-between gap-[20px]">
       {addOns.map((item) => {
         return (
           <div
+            onClick={() => handleChange(item)}
             key={item.id}
             className={`${
               item.checked
-                ? "gap-[50px] bg-alabaster shadow-[0_0_0_1px_rgba(71,61,255,1)] border-transparent"
+                ? " bg-alabaster shadow-[0_0_0_1px_rgba(71,61,255,1)] border-transparent"
                 : ""
-            } items-center cursor-pointer transition-all ease-in-out duration-300 hover:bg-alabaster hover:border-transparent hover:shadow-[0_0_0_1px_rgba(71,61,255,1)] rounded-[8px] border border-light-gray flex-1 pl-[11px] pr-[20px] py-[16px] flex justify-between`}
+            } items-center cursor-pointer transition-all ease-in-out duration-300 hover:bg-alabaster hover:border-transparent hover:shadow-[0_0_0_1px_rgba(71,61,255,1)] rounded-[8px] border border-light-gray flex-1 pl-[6px] lg:pl-[11px] lg:pr-[20px] pr-[16px] py-[12px] lg:py-[16px] flex justify-between`}
           >
-            <div className="flex flex-row gap-[15px] items-center">
+            <div className="flex flex-row gap-[10px] lg:gap-[20px] items-center">
               <div>
-                <BpCheckbox />
+                <BpCheckbox
+                  checked={item.checked}
+                  onChange={() => handleChange(item)}
+                />
               </div>
               <div className="">
-                <h3 className=" text-marine-blue font-bold text-[18px]">
+                <h3 className=" text-marine-blue font-bold text-[16px] lg:text-[18px]">
                   {item.title}
                 </h3>
-                <p className=" text-cool-gray">{item.subtitle}</p>
+                <p className="lg:text-[16px] text-[14px] text-cool-gray">
+                  {item.subtitle}
+                </p>
               </div>
             </div>
-            <p className="text-purplish-blue">
+            <p className="text-purplish-blue lg:text-[16px] text-[14px]">
               +$
               {!isMonthly
                 ? item.monthlyPrice + "/mo"

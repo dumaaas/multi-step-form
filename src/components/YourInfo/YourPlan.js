@@ -1,6 +1,7 @@
 import Switch from "@mui/material/Switch";
 import { styled } from "@mui/material/styles";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 const AntSwitch = styled(Switch)(({ theme }) => ({
   width: "44px",
@@ -49,16 +50,39 @@ const AntSwitch = styled(Switch)(({ theme }) => ({
   },
 }));
 
-function YourInfo2() {
+function YourPlan() {
+  const dispatch = useDispatch();
   const [isMonthly, setIsMonthly] = useState(false);
   const [pickedPlan, setPickedPlan] = useState(null);
+  const isMonthlyStore = useSelector((state) => state.isMonthly);
+  const plan = useSelector((state) => state.plan);
+  const errorPlan = useSelector((state) => state.errorPlan);
+
+  useEffect(() => {
+    if (isMonthlyStore !== null) setIsMonthly(isMonthlyStore);
+    if (plan !== null) setPickedPlan(plan.id);
+  });
 
   const handleChange = (event) => {
     setIsMonthly(event.target.checked);
+    dispatch({
+      type: "SET_MONTHLY",
+      payload: event.target.checked,
+    });
   };
 
-  const pickPlan = (id) => {
-    setPickedPlan(id);
+  const pickPlan = (item) => {
+    if (errorPlan) {
+      dispatch({
+        type: "SET_ERROR_PLAN",
+        payload: false,
+      });
+    }
+    setPickedPlan(item.id);
+    dispatch({
+      type: "SET_PLAN",
+      payload: item,
+    });
   };
 
   const planData = [
@@ -89,13 +113,19 @@ function YourInfo2() {
   ];
   return (
     <div className="flex flex-col gap-[30px]">
-      <div className="flex flex-row justify-between gap-[20px]">
+      <div className="flex lg:flex-row flex-col justify-between gap-[20px]">
         {planData.map((item) => {
           return (
             <div
               key={item.id}
-              onClick={() => pickPlan(item.id)}
-              className={`${pickedPlan === item.id ? 'gap-[50px] bg-alabaster shadow-[0_0_0_1px_rgba(71,61,255,1)] border-transparent' : ''} cursor-pointer transition-all ease-in-out duration-300 hover:bg-alabaster hover:border-transparent hover:shadow-[0_0_0_1px_rgba(71,61,255,1)] gap-[40px] rounded-[8px] border border-light-gray flex-1 p-[16px] flex flex-col justify-between`}
+              onClick={() => pickPlan(item)}
+              className={`${
+                pickedPlan === item.id
+                  ? "bg-alabaster shadow-[0_0_0_1px_rgba(71,61,255,1)] border-transparent"
+                  : ""
+              } cursor-pointer transition-all ease-in-out duration-300 hover:bg-alabaster hover:border-transparent hover:shadow-[0_0_0_1px_rgba(71,61,255,1)] gap-[16px] lg:items-start  lg:gap-[40px] rounded-[8px] border border-light-gray flex-1 p-[16px] flex lg:flex-col flex-row justify-start lg:justify-between ${
+                isMonthly ? "items-start" : "items-center"
+              }`}
             >
               <img
                 className="w-[44px] h-[44px]"
@@ -103,10 +133,10 @@ function YourInfo2() {
                 alt={`item-${item.icon}`}
               />
               <div className="">
-                <h3 className=" text-marine-blue font-bold text-[18px]">
+                <h3 className=" text-marine-blue font-bold text-[16px] lg:text-[18px]">
                   {item.title}
                 </h3>
-                <p className=" text-cool-gray">
+                <p className=" text-cool-gray lg:text-[18px] text-[16px] ">
                   {" "}
                   $
                   {!isMonthly
@@ -124,16 +154,36 @@ function YourInfo2() {
         })}
       </div>
       <div className="w-full bg-[rgba(150,153,171,0.1)] rounded-[8px] flex items-center justify-center py-[12px] gap-[25px]">
-        <p className={`font-bold ${isMonthly ? 'text-cool-gray' : 'text-marine-blue'}`}>Monthly</p>
+        <p
+          className={`font-bold ${
+            isMonthly ? "text-cool-gray" : "text-marine-blue"
+          }`}
+        >
+          Monthly
+        </p>
         <AntSwitch
           checked={isMonthly}
           onChange={(e) => handleChange(e)}
           inputProps={{ "aria-label": "ant design" }}
         />
-        <p className={`font-bold ${!isMonthly ? 'text-cool-gray' : 'text-marine-blue'}`}>Yearly</p>
+        <p
+          className={`font-bold ${
+            !isMonthly ? "text-cool-gray" : "text-marine-blue"
+          }`}
+        >
+          Yearly
+        </p>
+      </div>
+
+      <div
+        className={`${
+          errorPlan ? "opacity-1" : "opacity-0"
+        } text-strawberry-red transition-all duration-500 ease-in-out`}
+      >
+        Please select your plan.
       </div>
     </div>
   );
 }
 
-export default YourInfo2;
+export default YourPlan;

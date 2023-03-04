@@ -1,10 +1,44 @@
 const reducerFn = (
   state = {
     activeStep: 1,
+    plan: null,
+    isMonthly: null,
+    addOns: null,
+    errorPlan: false,
+    name: {
+      errorText: "",
+      showError: false,
+      text: "",
+    },
+    email: {
+      errorText: "",
+      showError: false,
+      text: "",
+    },
+    phone: {
+      errorText: "",
+      showError: false,
+      text: "",
+    },
   },
   action
 ) => {
   switch (action.type) {
+    case "SET_NAME":
+      return {
+        ...state,
+        name: action.payload,
+      };
+    case "SET_EMAIL":
+      return {
+        ...state,
+        email: action.payload,
+      };
+    case "SET_PHONE":
+      return {
+        ...state,
+        phone: action.payload,
+      };
     case "NEXT_STEP":
       return {
         ...state,
@@ -17,9 +51,30 @@ const reducerFn = (
       };
     case "CHANGE_PLAN":
       return {
-        state,
+        ...state,
         activeStep: 2,
       };
+    case "SET_PLAN":
+      return {
+        ...state,
+        plan: action.payload,
+      };
+    case "SET_MONTHLY":
+      return {
+        ...state,
+        isMonthly: action.payload,
+      };
+    case "SET_ADDONS":
+      return {
+        ...state,
+        addOns: action.payload,
+      };
+    case "SET_ERROR_PLAN":
+      return {
+        ...state,
+        errorPlan: action.payload,
+      };
+
     default:
       break;
   }
