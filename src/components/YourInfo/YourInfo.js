@@ -83,7 +83,7 @@ function YourInfo() {
           onChange={(event) => handleNameChange(event)}
           type="text"
           placeholder="e.g. Stephen King"
-          className=" border-light-gray border  rounded-[8px] px-[16px] py-[10px] lg:py-[12px]"
+          className={`${name.showError ? ' border-strawberry-red ' : 'border-light-gray focus:border-purplish-blue'} focus:outline-none  border outline-[1px] rounded-[8px] px-[16px] py-[10px] lg:py-[12px]`}
         />
       </div>
       <div className="flex flex-col gap-[6px]">
@@ -101,7 +101,7 @@ function YourInfo() {
           onChange={(event) => handleEmailChange(event)}
           type="text"
           placeholder="e.g. stephenking@lorem.com"
-          className="border-light-gray border  rounded-[8px] px-[16px] py-[10px] lg:py-[12px]"
+          className={`${email.showError ? ' border-strawberry-red ' : 'border-light-gray focus:border-purplish-blue'} focus:outline-none  border outline-[1px] rounded-[8px] px-[16px] py-[10px] lg:py-[12px]`}
         />
       </div>
       <div className="flex flex-col gap-[6px]">
@@ -119,7 +119,7 @@ function YourInfo() {
           onChange={(event) => handlePhoneChange(event)}
           type="text"
           placeholder="e.g. + 1 234 567 890"
-          className="border-light-gray border  rounded-[8px] px-[16px] py-[10px] lg:py-[12px]"
+          className={`${phone.showError ? ' border-strawberry-red ' : 'border-light-gray focus:border-purplish-blue'} focus:outline-none  border outline-[1px] rounded-[8px] px-[16px] py-[10px] lg:py-[12px]`}
         />
       </div>
     </div>
